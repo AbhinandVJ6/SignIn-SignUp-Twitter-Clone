@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+{% block content %}
+{% load static %}
+<link rel="icon" type="img/png" href="images/techis-logo.png">
+</link>
+<section class="content">
+    <header>
+        <img class="twitter" src="{% static 'images/twitter.png' %}" />
+
+        <h2 class='heading'> Home </h2>
+
+    </header>
+
+
+    {% load i18n %}
+
+    {% block head_title %}
+
+
+    <div class="text-center">
+        <form method="post" action="{% url 'account_logout' %}">
+            {% csrf_token %}
+            {% if redirect_field_value %}
+            <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+            {% endif %}
+            <button class="btn btn-dark" type="submit">{% trans 'Sign Out' %}</button>
+        </form>
+
+    </div>
+    {% endblock %}
+    <section class="post_form">
+        <form action="/" method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <p class="name_m">Hi {{ user }} </p>
+            <textarea name="body" placeholder="What's happening? " required></textarea>
+            <input type="file" id="files" name="image" />
+
+            <input class="submit" type="submit" value="Tweet" />
+        </form>
+    </section>
+    <section class="posts">
+        <ul>
+            {% for post in posts %}
+            <li>
+                <img class="menu_icon js-menu-icon" src="{% static 'images/menu.png' %}" />
+                <div class="menu">
+                    <div id="e">
+                        <a href="/edit/{{post.id}}/"> Edit </a> <br>
+                    </div>
+                    <div id="d">
+                        <a href="/delete/{{post.id}}/">Delete</a>
+                    </div>
+
+                </div>
+                <div class="logo">
+                    <img class='logo_1' src="{% static 'images/ima.jpeg' %}" />
+                </div>
+                <div class="name_body">
+                    <div class="name">{{ user }}</div>
+                    <div class="datetime">{{post.created_at}}</div>
+                    <p>{{post.body}}</p>
+                    <div class="allign">
+                    {% if post.image.url %}
+                        <img class="body-image" src="{{post.image.url}}" alt="" />
+                    {% endif %}
+                    </div>
+                    <div class="icon_list">
+                        <a style="text-decoration: none;" href="/like/{{post.id}}"> <img class="like"
+                                src="/static/images/like.png" alt="like" />
+                        </a>
+                        {{ post.likes }}
+                        <div class="hr">
+                            <hr>
+                        </div>
+                    </div>
+                </div>
+
+            </li>
+            {% endfor %}
+        </ul>
+    </section>
+    <script src="https://code.jquery.com/jquery-3.6.0.js"
+        integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
+    <script src="{% static 'js/posts.js' %}"></script>
+</section>
+{% endblock %}
